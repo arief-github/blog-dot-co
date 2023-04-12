@@ -1,7 +1,7 @@
 ---
 type: 'page'
 date: '2023-04-08'
-image: '../images/about-image.jpg'
+image: '../images/about.jpg'
 slug: 'about'
 title: 'about us page'
 ---

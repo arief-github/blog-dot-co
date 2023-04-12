@@ -13,7 +13,7 @@ const Layout = ({ children }) => {
     <ThemeProvider theme={darkTheme}>
         <GlobalStyles/>
         <Header siteTitle={data.title}/>
-        <p>{children}</p>
+        {children}
     </ThemeProvider>
   )
 }
