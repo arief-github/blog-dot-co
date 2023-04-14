@@ -4,25 +4,27 @@ import Seo from "components/SEO"
 import Layout from "components/Layout"
 import HomeBanner from "components/HomeBanner"
 import BlogPostCard from "components/BlogPostCard"
+import PageNavigation from "components/PageNavigation"
 import { graphql as gql } from "gatsby";
 
-const IndexPage = ({ data }) => {
+const IndexPage = ({ data, pageContext }) => {
   const posts = data.allMarkdownRemark.edges;
 
   return (
     <Layout>
       <HomeBanner/>
       <main>
+        <PageNavigation currentPage={pageContext.currentPage} numPages={pageContext.numPages} />
         {posts.map(( { node } , index) => {
-          const title = node.frontmatter.title;
+          const title = node.frontmatter.title || node.fields.slug;
           const date = node.frontmatter.date;
           const readingTime = node.fields.readingTime.text;
           const excerpt = node.excerpt;
           const image = node.frontmatter.image.childImageSharp.gatsbyImageData;
 
           return <BlogPostCard 
-                    key={index} 
-                    slug="/" 
+                    key={node.fields.slug} 
+                    slug={node.fields.slug} 
                     title={title} 
                     date={date} 
                     readingTime={readingTime} 
@@ -37,14 +39,17 @@ const IndexPage = ({ data }) => {
 }
 
 export const query = gql`
-query blogListQuery {
+query blogListQuery($skip: Int!, $limit: Int!) {
     allMarkdownRemark(
+      limit: $limit
+      skip: $skip
       sort: {frontmatter: {date: DESC}}
-      filter: {frontmatter: {type: {eq: "post"}}}
+      filter: {frontmatter: {type: {eq: "post"}, published: { eq: true } } }
     ) {
       edges {
         node {
           fields {
+            slug
             readingTime {
               text
             }
